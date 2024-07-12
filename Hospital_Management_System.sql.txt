@@ -1,0 +1,255 @@
+MariaDB [(none)]> create database hospital_database;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> use hospital_database;
+Database changed
+MariaDB [hospital_database]> CREATE TABLE Patients (
+    ->     PatientID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     FirstName VARCHAR(50),
+    ->     LastName VARCHAR(50),
+    ->     DOB DATE,
+    ->     Gender CHAR(1),
+    ->     ContactInfo VARCHAR(100),
+    ->     Address VARCHAR(200)
+    -> );
+Query OK, 0 rows affected (0.017 sec)
+
+MariaDB [hospital_database]> CREATE TABLE Doctors (
+    ->     DoctorID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     FirstName VARCHAR(50),
+    ->     LastName VARCHAR(50),
+    ->     Specialization VARCHAR(50),
+    ->     Phone VARCHAR(15),
+    ->     Email VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.020 sec)
+
+MariaDB [hospital_database]> CREATE TABLE Appointments (
+    ->     AppointmentID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     PatientID INT,
+    ->     DoctorID INT,
+    ->     AppointmentDate DATE,
+    ->     AppointmentTime TIME,
+    ->     Status VARCHAR(20),
+    ->     FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
+    ->     FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
+    -> );
+Query OK, 0 rows affected (0.049 sec)
+
+MariaDB [hospital_database]> CREATE TABLE Treatments (
+    ->     TreatmentID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     AppointmentID INT,
+    ->     Description TEXT,
+    ->     Cost DECIMAL(10, 2),
+    ->     FOREIGN KEY (AppointmentID) REFERENCES Appointments(AppointmentID)
+    -> );
+Query OK, 0 rows affected (0.055 sec)
+
+MariaDB [hospital_database]> CREATE TABLE Billing (
+    ->     BillID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     PatientID INT,
+    ->     TotalAmount DECIMAL(10, 2),
+    ->     PaidAmount DECIMAL(10, 2),
+    ->     DueDate DATE,
+    ->     Status VARCHAR(20),
+    ->     FOREIGN KEY (PatientID) REFERENCES Patients(PatientID)
+    -> );
+Query OK, 0 rows affected (0.049 sec)
+
+MariaDB [hospital_database]> INSERT INTO Patients VALUES (100,'Bob','Johnson','1986-01-21','M','1234567890','Ohio');
+Query OK, 1 row affected (0.082 sec)
+
+MariaDB [hospital_database]> INSERT INTO Patients VALUES (200,'Jim','Gordan','1978-07-28','M','7890123456','New York');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> INSERT INTO Patients VALUES (300,'Barbara','Chen','1994-04-18','F','8901234567','Texas');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> INSERT INTO Patients VALUES (400,'Jenny','Kim','1998-12-31','F','0123456789','California');
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [hospital_database]> select * from Patients;
++-----------+-----------+----------+------------+--------+-------------+------------+
+| PatientID | FirstName | LastName | DOB        | Gender | ContactInfo | Address    |
++-----------+-----------+----------+------------+--------+-------------+------------+
+|       100 | Bob       | Johnson  | 1986-01-21 | M      | 1234567890  | Ohio       |
+|       200 | Jim       | Gordan   | 1978-07-28 | M      | 7890123456  | New York   |
+|       300 | Barbara   | Chen     | 1994-04-18 | F      | 8901234567  | Texas      |
+|       400 | Jenny     | Kim      | 1998-12-31 | F      | 0123456789  | California |
++-----------+-----------+----------+------------+--------+-------------+------------+
+4 rows in set (0.001 sec)
+
+MariaDB [hospital_database]> INSERT INTO Doctors VALUES (1,'David','Joe','Cardiology','5553456789','david.joe@gmail.com');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> INSERT INTO Doctors VALUES (2,'Lisa','Williams','Oncology','5554567890','williams@gmail.com');
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [hospital_database]> INSERT INTO Doctors VALUES (3,'Michael','Garcia','Neurology','5555678901','michael@gmail.com');
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [hospital_database]> INSERT INTO Doctors VALUES (4,'Amanda','Davis','Dermatology','5558901234','amanda.davis@gmail.com');
+Query OK, 1 row affected (0.012 sec)
+
+MariaDB [hospital_database]> select * from Doctors;
++----------+-----------+----------+----------------+------------+------------------------+
+| DoctorID | FirstName | LastName | Specialization | Phone      | Email                  |
++----------+-----------+----------+----------------+------------+------------------------+
+|        1 | David     | Joe      | Cardiology     | 5553456789 | david.joe@gmail.com    |
+|        2 | Lisa      | Williams | Oncology       | 5554567890 | williams@gmail.com     |
+|        3 | Michael   | Garcia   | Neurology      | 5555678901 | michael@gmail.com      |
+|        4 | Amanda    | Davis    | Dermatology    | 5558901234 | amanda.davis@gmail.com |
++----------+-----------+----------+----------------+------------+------------------------+
+4 rows in set (0.000 sec)
+
+MariaDB [hospital_database]> INSERT INTO Appointments VALUES (1001,100,1,'2024-07-18','10:02:27','Done');
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [hospital_database]> INSERT INTO Appointments VALUES (1002,200,2,'2024-08-04','18:30:00','Pending');
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [hospital_database]> INSERT INTO Appointments VALUES (1003,300,3,'2024-08-20','20:45:56','Pending');
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [hospital_database]> INSERT INTO Appointments VALUES (1004,400,4,'2024-06-30','16:15:34','Done');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> select * from Appointments;
++---------------+-----------+----------+-----------------+-----------------+---------+
+| AppointmentID | PatientID | DoctorID | AppointmentDate | AppointmentTime | Status  |
++---------------+-----------+----------+-----------------+-----------------+---------+
+|          1001 |       100 |        1 | 2024-07-18      | 10:02:27        | Done    |
+|          1002 |       200 |        2 | 2024-08-04      | 18:30:00        | Pending |
+|          1003 |       300 |        3 | 2024-08-20      | 20:45:56        | Pending |
+|          1004 |       400 |        4 | 2024-06-30      | 16:15:34        | Done    |
++---------------+-----------+----------+-----------------+-----------------+---------+
+4 rows in set (0.001 sec)
+
+MariaDB [hospital_database]> INSERT INTO Treatments VALUES (201,1001,'Fair',10000.00);
+Query OK, 1 row affected (0.085 sec)
+
+MariaDB [hospital_database]> INSERT INTO Treatments VALUES (202,1002,'Good',18000.00);
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> INSERT INTO Treatments VALUES (203,1003,'Poor',26000.00);
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> INSERT INTO Treatments VALUES (204,1004,'Fair',45000.00);
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> select * from Treatments;
++-------------+---------------+-------------+----------+
+| TreatmentID | AppointmentID | Description | Cost     |
++-------------+---------------+-------------+----------+
+|         201 |          1001 | Fair        | 10000.00 |
+|         202 |          1002 | Good        | 18000.00 |
+|         203 |          1003 | Poor        | 26000.00 |
+|         204 |          1004 | Fair        | 45000.00 |
++-------------+---------------+-------------+----------+
+4 rows in set (0.001 sec)
+
+MariaDB [hospital_database]> INSERT INTO Billing VALUES (301,100,10000.00,10000.00,'2024-07-02','Payment is paid');
+Query OK, 1 row affected (0.010 sec)
+
+MariaDB [hospital_database]> INSERT INTO Billing VALUES (302,200,18000.00,14000.00,'2024-06-22','Payment is pending');
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [hospital_database]> INSERT INTO Billing VALUES (303,300,26000.00,26000.00,'2024-05-05','Payment is paid');
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [hospital_database]> INSERT INTO Billing VALUES (304,400,45000.00,45000.00,'2024-02-20','Payment is paid');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [hospital_database]> select * from Billing;
++--------+-----------+-------------+------------+------------+--------------------+
+| BillID | PatientID | TotalAmount | PaidAmount | DueDate    | Status             |
++--------+-----------+-------------+------------+------------+--------------------+
+|    301 |       100 |    10000.00 |   10000.00 | 2024-07-02 | Payment is paid    |
+|    302 |       200 |    18000.00 |   14000.00 | 2024-06-22 | Payment is pending |
+|    303 |       300 |    26000.00 |   26000.00 | 2024-05-05 | Payment is paid    |
+|    304 |       400 |    45000.00 |   45000.00 | 2024-02-20 | Payment is paid    |
++--------+-----------+-------------+------------+------------+--------------------+
+4 rows in set (0.001 sec)
+
+MariaDB [hospital_database]> DELIMITER //
+MariaDB [hospital_database]> CREATE PROCEDURE AddNewPatient (
+    ->     IN p_FirstName VARCHAR(50),
+    ->     IN p_LastName VARCHAR(50),
+    ->     IN p_DOB DATE,
+    ->     IN p_Gender CHAR(1),
+    ->     IN p_ContactInfo VARCHAR(100),
+    ->     IN p_Address VARCHAR(200)
+    -> )
+    -> BEGIN
+    ->     INSERT INTO Patients (FirstName, LastName, DOB, Gender, ContactInfo, Address)
+    ->     VALUES (p_FirstName, p_LastName, p_DOB, p_Gender, p_ContactInfo, p_Address);
+    -> END //
+Query OK, 0 rows affected (0.010 sec)
+
+MariaDB [hospital_database]> DELIMITER //
+MariaDB [hospital_database]> CREATE FUNCTION CalculateTotalBill (
+    ->     p_PatientID INT
+    -> )
+    -> RETURNS DECIMAL(10, 2)
+    -> DETERMINISTIC
+    -> BEGIN
+    ->     DECLARE total DECIMAL(10, 2);
+    ->     SELECT SUM(Cost) INTO total
+    ->     FROM Treatments
+    ->     WHERE AppointmentID IN (
+    ->         SELECT AppointmentID
+    ->         FROM Appointments
+    ->         WHERE PatientID = p_PatientID
+    ->     );
+    ->     RETURN total;
+    -> END //
+Query OK, 0 rows affected (0.013 sec)
+
+MariaDB [hospital_database]> select TreatmentID, AppointmentID, Description, CalculateTotalBill(Cost) as 'Total' from Treatments;
+    -> //
++-------------+---------------+-------------+-------+
+| TreatmentID | AppointmentID | Description | Total |
++-------------+---------------+-------------+-------+
+|         201 |          1001 | Fair        |  NULL |
+|         202 |          1002 | Good        |  NULL |
+|         203 |          1003 | Poor        |  NULL |
+|         204 |          1004 | Fair        |  NULL |
++-------------+---------------+-------------+-------+
+4 rows in set (0.007 sec)
+
+MariaDB [hospital_database]> DELIMITER //
+MariaDB [hospital_database]> CREATE PROCEDURE SendAppointmentReminders ()
+    -> BEGIN
+    ->     DECLARE done INT DEFAULT 0;
+    ->     DECLARE appDate DATE;
+    ->     DECLARE appTime TIME;
+    ->     DECLARE pID INT;
+    ->     DECLARE cur CURSOR FOR
+    ->         SELECT AppointmentDate, AppointmentTime, PatientID
+    ->         FROM Appointments
+    ->         WHERE AppointmentDate = CURDATE();
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    ->     OPEN cur;
+    ->     read_loop: LOOP
+    ->         FETCH cur INTO appDate, appTime, pID;
+    ->         IF done THEN
+    ->             LEAVE read_loop;
+    ->         END IF;
+    ->         -- Send reminder logic here (e.g., call another procedure)
+    ->     END LOOP;
+    ->     CLOSE cur;
+    -> END //
+Query OK, 0 rows affected (0.010 sec)
+
+MariaDB [hospital_database]> DELIMITER //
+MariaDB [hospital_database]> CREATE TRIGGER LogPatientContactInfoChanges
+    -> AFTER UPDATE ON Patients
+    -> FOR EACH ROW
+    -> BEGIN
+    ->     IF NEW.ContactInfo <> OLD.ContactInfo THEN
+    ->         INSERT INTO PatientContactLog (PatientID, OldContactInfo, NewContactInfo, ChangeDate)
+    ->         VALUES (OLD.PatientID, OLD.ContactInfo, NEW.ContactInfo, NOW());
+    ->     END IF;
+    -> END //
+Query OK, 0 rows affected (0.017 sec)
